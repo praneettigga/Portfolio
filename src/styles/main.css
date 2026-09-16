@@ -1,3 +1,11 @@
+@font-face {
+  font-family: 'Rubik Variable';
+  font-style: normal;
+  font-weight: 300 900;
+  font-display: swap;
+  src: url('../assets/fonts/rubik-latin-variable.woff2') format('woff2');
+}
+
 :root {
   --bg: #090909;
   --surface: #101010;
@@ -1404,9 +1412,11 @@ button:focus-visible {
 }
 
 .hero__role span {
-  color: #aaa9a4;
+  /* Invert over the cursor's accent pixel field so the fine mono type stays legible. */
+  color: var(--ink);
   font: 700 0.58rem/1.4 var(--mono);
   letter-spacing: 0.17em;
+  mix-blend-mode: difference;
 }
 
 .portrait-wrap {
@@ -1486,13 +1496,23 @@ button:focus-visible {
 
 .hero__name h1 {
   margin: 0;
+  font-family: 'Rubik Variable', var(--sans);
   line-height: 0.7;
-  letter-spacing: -0.065em;
+  letter-spacing: -0.035em;
 }
 
 .hero__name span {
   display: block;
   width: max-content;
+}
+
+.hero__name .hero__letter {
+  display: inline-block;
+  width: auto;
+}
+
+.hero__role {
+  font-family: 'Rubik Variable', var(--sans);
 }
 
 .hero__first-name {
@@ -1515,9 +1535,10 @@ button:focus-visible {
   z-index: 5;
   display: flex;
   gap: clamp(1.25rem, 2vw, 2.75rem);
-  color: #aaa9a4;
+  color: var(--ink);
   font: 700 0.55rem/1 var(--mono);
   letter-spacing: 0.14em;
+  mix-blend-mode: difference;
   text-transform: uppercase;
 }
 
@@ -1541,9 +1562,10 @@ button:focus-visible {
   display: flex;
   align-items: center;
   gap: 0.7rem;
-  color: #aaa9a4;
+  color: var(--ink);
   font: 700 0.58rem/1 var(--mono);
   letter-spacing: 0.16em;
+  mix-blend-mode: difference;
   text-transform: uppercase;
 }
 

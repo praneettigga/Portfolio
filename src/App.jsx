@@ -5,6 +5,7 @@ import resumeUrl from '../Docs/References/MyResume-1.pdf'
 import portraitUrl from './assets/portrait-pixel.png'
 import { Header } from './components/Header.jsx'
 import { InteractivePixelField } from './components/InteractivePixelField.jsx'
+import { VariableName } from './components/VariableName.jsx'
 import { ProjectCard } from './components/ProjectCard.jsx'
 import { SectionHeading } from './components/SectionHeading.jsx'
 import { certifications, experience, links, projects, skills } from './data/portfolio.js'
@@ -110,8 +111,8 @@ function App() {
 
           <div className="hero__name" id="hero-title">
             <h1 aria-label="Praneet Tigga">
-              <span className="hero-reveal hero__first-name">Praneet</span>
-              <span className="hero-reveal hero__last-name">Tigga.</span>
+              <VariableName text="Praneet" base={320} hover={700} className="hero-reveal hero__first-name" />
+              <VariableName text="Tigga" base={900} hover={600} className="hero-reveal hero__last-name" />
             </h1>
           </div>
 

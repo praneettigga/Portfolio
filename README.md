@@ -2,6 +2,8 @@
 
 A monochrome, ASCII-inspired software engineering portfolio built with React, Vite, and GSAP.
 
+Deployed link: https://praneettigga.vercel.app/
+
 ## Development
 
 ```bash
