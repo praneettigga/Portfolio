@@ -1,10 +1,12 @@
-import { useLayoutEffect, useRef } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import resumeUrl from '../Docs/References/MyResume-1.pdf'
 import portraitUrl from './assets/portrait-pixel.png'
 import { Header } from './components/Header.jsx'
+import { PageHud } from './components/PageHud.jsx'
 import { InteractivePixelField } from './components/InteractivePixelField.jsx'
+import { SoundVisualizer } from './components/SoundVisualizer.jsx'
 
 import { VariableName } from './components/VariableName.jsx'
 import { ProjectCard } from './components/ProjectCard.jsx'
@@ -24,6 +26,23 @@ function ExternalLink({ href, children, className = '' }) {
 
 function App() {
   const pageRef = useRef(null)
+  const heroRef = useRef(null)
+  const [hasPassedLanding, setHasPassedLanding] = useState(false)
+
+  useEffect(() => {
+    const updateTopButton = () => {
+      setHasPassedLanding(heroRef.current?.getBoundingClientRect().bottom <= 0)
+    }
+
+    updateTopButton()
+    window.addEventListener('scroll', updateTopButton, { passive: true })
+    window.addEventListener('resize', updateTopButton)
+
+    return () => {
+      window.removeEventListener('scroll', updateTopButton)
+      window.removeEventListener('resize', updateTopButton)
+    }
+  }, [])
 
   useLayoutEffect(() => {
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -89,9 +108,10 @@ function App() {
     <div className="page" ref={pageRef}>
       <div className="scroll-progress" aria-hidden="true" />
       <Header />
+      <PageHud />
 
       <main id="main-content">
-        <section className="hero" id="top" aria-labelledby="hero-title">
+        <section className="hero" id="top" aria-labelledby="hero-title" ref={heroRef}>
           <div className="hero__pixel-field" aria-hidden="true">
             <InteractivePixelField />
           </div>
@@ -124,17 +144,6 @@ function App() {
             <span><i /> Open to opportunities</span>
           </div>
 
-          <a className="hero__scroll hero-reveal" href="#work">
-            <span aria-hidden="true">▼</span> Scroll
-          </a>
-
-          <div className="hero__hud hero-reveal" aria-hidden="true">
-            <span>SCRL <b>0.00</b></span>
-            <span>CRSR <b data-cursor-value>0.0</b></span>
-            <span>01 — INTRO</span>
-            <span>THEME <b>■ #C3FFFC</b></span>
-            <span>+05:30</span>
-          </div>
         </section>
 
         <section className="section work" id="work" aria-labelledby="work-title">
@@ -222,7 +231,7 @@ function App() {
             </div>
 
             <div className="interests reveal">
-              <div className="interests__orbit" aria-hidden="true"><span>+</span></div>
+              <SoundVisualizer />
               <div>
                 <p className="kicker">Off the clock / still creating</p>
                 <h3>Sound is another system.</h3>
@@ -259,12 +268,15 @@ function App() {
             <a className="contact__email reveal" href={links.email}>
               praneetnischal@karunya.edu.in <span aria-hidden="true">↗</span>
             </a>
+            <ExternalLink className="contact__email contact__social reveal" href={links.github}>
+              GitHub <span aria-hidden="true">↗</span>
+            </ExternalLink>
+            <ExternalLink className="contact__email contact__social reveal" href={links.linkedin}>
+              LinkedIn <span aria-hidden="true">↗</span>
+            </ExternalLink>
           </div>
-          <div className="contact__links reveal">
-            <ExternalLink href={links.github}>GitHub <span>↗</span></ExternalLink>
-            <ExternalLink href={links.linkedin}>LinkedIn <span>↗</span></ExternalLink>
-            <a href={resumeUrl} download="Praneet-Nischal-Tigga-Resume.pdf">Résumé <span>↓</span></a>
-            <a href="#top">Back to top <span>↑</span></a>
+          <div className="contact__links">
+            <a className="contact__download" href={resumeUrl} download="Praneet-Nischal-Tigga-Resume.pdf">Résumé <span aria-hidden="true">↓</span></a>
           </div>
           <footer>
             <span>© 2026 PRANEET NISCHAL TIGGA</span>
@@ -272,6 +284,14 @@ function App() {
           </footer>
         </section>
       </main>
+      {hasPassedLanding && (
+        <a className="back-to-top" href="#top" aria-label="Back to top" title="Back to top">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M6 11L12 5L18 11M12 5V20M5 3H19" />
+          </svg>
+          <span aria-hidden="true">TOP</span>
+        </a>
+      )}
     </div>
   )
 }

@@ -32,6 +32,7 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
   background: var(--bg);
 }
 
@@ -112,7 +113,7 @@ button:focus-visible {
 }
 
 .site-header {
-  position: absolute;
+  position: fixed;
   top: 0;
   right: 0;
   left: 0;
@@ -852,7 +853,11 @@ button:focus-visible {
   align-items: start;
   gap: clamp(1.25rem, 4vw, 4rem);
 }
-.about-photo { margin: 2.8rem 0 0; max-width: 17.5rem; }
+.about-photo {
+  margin: 2.8rem 0 0;
+  max-width: 17.5rem;
+  perspective: 900px;
+}
 .education-trail { min-width: 0; }
 .education-trail > .kicker { color: var(--muted); margin: 0 0 2rem; }
 .education-timeline { list-style: none; margin: 0; padding: 0 0 0 0.3rem; }
@@ -891,9 +896,17 @@ button:focus-visible {
   object-position: center;
   border-radius: 3px;
   filter: grayscale(1);
-  transition: filter 350ms ease;
+  transform-origin: center;
+  transition: filter 500ms ease, transform 650ms cubic-bezier(0.2, 0.65, 0.3, 1), box-shadow 650ms ease;
 }
 .about-event-photo:hover { filter: grayscale(0); }
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .about-photo:hover .about-event-photo {
+    filter: grayscale(0);
+    transform: translateY(-4px) rotateX(2deg) rotateY(-3deg) scale(1.025);
+    box-shadow: 6px 10px 24px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(195, 255, 252, 0.25);
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   .about-event-photo { transition: none; }
 }
@@ -916,24 +929,26 @@ button:focus-visible {
   margin-top: clamp(5rem, 10vw, 10rem);
 }
 
-.interests__orbit {
-  display: grid;
-  place-items: center;
-  aspect-ratio: 1;
-  border: 1px solid var(--line);
-  border-radius: 50%;
-  background: repeating-radial-gradient(circle, transparent 0, transparent 18px, var(--line) 19px);
+.sound-visualizer {
+  width: 100%;
 }
 
-.interests__orbit span {
-  display: grid;
-  place-items: center;
-  width: 3rem;
-  height: 3rem;
-  color: var(--bg);
-  border-radius: 50%;
-  background: var(--ink);
-  font: 500 1.25rem/1 var(--mono);
+.sound-visualizer canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  background: radial-gradient(circle, rgba(195, 255, 252, 0.045), transparent 65%);
+}
+
+.sound-visualizer__label {
+  display: block;
+  margin-top: 0.75rem;
+  width: 100%;
+  text-align: center;
+  color: var(--muted);
+  font: 500 clamp(0.4rem, 0.55vw, 0.6rem)/1 var(--mono);
+  letter-spacing: 0.18em;
 }
 
 .interests h3 {
@@ -991,9 +1006,8 @@ button:focus-visible {
 }
 
 .contact {
-  min-height: 100svh;
-  margin-top: var(--section-space);
-  padding: 2rem var(--gutter) 1.5rem;
+  margin-top: clamp(3rem, 6vw, 6rem);
+  padding: 1rem var(--gutter) 1rem;
   color: var(--bg);
   background: var(--ink);
 }
@@ -1010,11 +1024,11 @@ button:focus-visible {
 }
 
 .contact__main {
-  padding-block: clamp(5rem, 12vw, 10rem);
+  padding-block: clamp(2rem, 4vw, 3.5rem) 1.5rem;
 }
 
 .contact__main .kicker {
-  margin-bottom: 2rem;
+  margin-bottom: 1.25rem;
 }
 
 .contact h2 {
@@ -1032,11 +1046,15 @@ button:focus-visible {
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
-  margin-top: clamp(4rem, 8vw, 8rem);
+  margin-top: clamp(2rem, 3vw, 3rem);
   padding-bottom: 1rem;
   border-bottom: 2px solid var(--bg);
   font-size: clamp(1rem, 2.4vw, 2.6rem);
   letter-spacing: -0.035em;
+}
+
+.contact__social {
+  margin-top: 1rem;
 }
 
 .contact__email span {
@@ -1049,7 +1067,7 @@ button:focus-visible {
 
 .contact__links {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: 1fr;
   border-top: 1px solid rgba(9, 9, 9, 0.25);
 }
 
@@ -1076,9 +1094,62 @@ button:focus-visible {
   background: var(--bg);
 }
 
+.contact__links .contact__download {
+  padding-inline: 1rem;
+  color: var(--bg);
+  background: transparent;
+}
+
+.contact__links .contact__download:hover,
+.contact__links .contact__download:focus-visible {
+  color: var(--ink);
+  background: var(--bg);
+}
+
 .contact footer {
-  margin-top: 5rem;
+  margin-top: 1.5rem;
   border-bottom: 0;
+}
+
+.back-to-top {
+  position: fixed;
+  right: var(--gutter);
+  bottom: calc(3.5rem + env(safe-area-inset-bottom, 0px));
+  z-index: 46;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  width: 3.25rem;
+  height: 3.5rem;
+  border: 1px solid rgba(195, 255, 252, 0.45);
+  border-radius: 0.65rem;
+  color: var(--accent);
+  background: rgba(9, 9, 9, 0.94);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.2);
+  font: 700 0.5rem/1 var(--mono);
+  letter-spacing: 0.12em;
+  transition: transform 180ms ease, color 180ms ease, background 180ms ease;
+}
+
+.back-to-top svg {
+  width: 1.35rem;
+  height: 1.35rem;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.back-to-top:hover,
+.back-to-top:focus-visible {
+  color: var(--bg);
+  background: var(--accent);
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .back-to-top:hover { transform: translateY(-3px); }
 }
 
 @media (max-width: 900px) {
@@ -1353,7 +1424,7 @@ button:focus-visible {
     grid-template-columns: 1fr;
   }
 
-  .interests__orbit {
+  .sound-visualizer {
     max-width: 14rem;
   }
 
@@ -1399,7 +1470,7 @@ button:focus-visible {
   }
 
   .contact__links {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
   }
 
   .contact__links a {
@@ -1432,7 +1503,7 @@ button:focus-visible {
 
 /* Reference-led hero: dense monochrome HUD, pixel portrait, oversized split name. */
 .site-header {
-  position: absolute;
+  position: fixed;
   min-height: 3.85rem;
   margin: 0;
   padding-inline: 1.75rem;
@@ -1706,7 +1777,7 @@ button:focus-visible {
 .hero__last-name {
   margin-top: 0.14em;
   color: var(--accent);
-  font-size: clamp(7.5rem, 13.3vw, 16rem);
+  font-size: clamp(5rem, 9.1vw, 11rem);
   font-weight: 900;
 }
 
@@ -1736,49 +1807,42 @@ button:focus-visible {
   background: var(--accent);
 }
 
-.hero__scroll {
-  position: absolute;
-  right: 2.35%;
-  bottom: 3.65rem;
-  z-index: 5;
-  display: flex;
-  align-items: center;
-  gap: 0.7rem;
-  color: var(--ink);
-  font: 700 0.58rem/1 var(--mono);
-  letter-spacing: 0.16em;
-  mix-blend-mode: difference;
-  text-transform: uppercase;
-}
-
-.hero__scroll span {
-  color: var(--accent);
-}
-
-.hero__hud {
-  position: absolute;
+.page-hud {
+  position: fixed;
   right: 0;
   bottom: 0;
   left: 0;
-  z-index: 8;
+  z-index: 45;
   display: grid;
-  grid-template-columns: auto auto 1fr auto auto;
+  grid-template-columns: 8ch 18ch 1fr auto auto;
   gap: 1.8rem;
   align-items: center;
   min-height: 2.5rem;
   padding-inline: 1.75rem;
   border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
   background: rgba(9, 9, 9, 0.94);
   color: var(--muted);
   font: 700 0.54rem/1 var(--mono);
   letter-spacing: 0.12em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
-.hero__hud span:nth-child(3) {
+.page {
+  padding-bottom: calc(2.5rem + env(safe-area-inset-bottom, 0px));
+}
+
+.page-hud {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  min-height: calc(2.5rem + env(safe-area-inset-bottom, 0px));
+}
+
+.page-hud span:nth-child(3) {
   justify-self: center;
 }
 
-.hero__hud b {
+.page-hud b {
   color: var(--accent);
   font-weight: inherit;
 }
@@ -1795,7 +1859,7 @@ button:focus-visible {
 
   .site-nav {
     gap: 0;
-    padding-top: 5rem;
+    padding-top: 7.5rem;
   }
 
   .resume-link {
@@ -1844,22 +1908,18 @@ button:focus-visible {
     display: none;
   }
 
-  .hero__scroll {
-    display: none;
-  }
-
-  .hero__hud {
+  .page-hud {
     grid-template-columns: 1fr auto 1fr;
     gap: 0.7rem;
     padding-inline: var(--gutter);
   }
 
-  .hero__hud span:nth-child(2),
-  .hero__hud span:nth-child(5) {
+  .page-hud span:nth-child(2),
+  .page-hud span:nth-child(5) {
     display: none;
   }
 
-  .hero__hud span:nth-child(4) {
+  .page-hud span:nth-child(4) {
     justify-self: end;
   }
 }
@@ -1904,7 +1964,7 @@ button:focus-visible {
   }
 
   .hero__last-name {
-    font-size: clamp(5.5rem, 27.5vw, 7.2rem);
+    font-size: clamp(3.75rem, 19vw, 5.3rem);
   }
 
   .hero__facts {
@@ -1915,19 +1975,17 @@ button:focus-visible {
     font-size: 0.46rem;
   }
 
-  .hero__hud {
+  .page-hud {
     grid-template-columns: 1fr 1fr;
     font-size: 0.45rem;
   }
 
-  .hero__hud span:first-child,
-  .hero__hud span:nth-child(2),
-  .hero__hud span:nth-child(5) {
+  .page-hud span:nth-child(4) {
     display: none;
   }
 
-  .hero__hud span:nth-child(3) {
-    justify-self: start;
+  .page-hud span:nth-child(3) {
+    justify-self: end;
   }
 }
 

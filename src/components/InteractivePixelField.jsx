@@ -48,7 +48,6 @@ export function InteractivePixelField() {
     if (portraitImage?.complete) preparePortrait()
     const name = hero.querySelector('.hero__name')
     const reticle = hero.querySelector('.cursor-reticle')
-    const hudValue = hero.querySelector('[data-cursor-value]')
     const pointer = { x: -10000, y: -10000, nx: 0.5, ny: 0.5 }
     const eased = { x: 0.5, y: 0.5 }
     let columns = 0
@@ -202,7 +201,6 @@ export function InteractivePixelField() {
       pointer.nx = Math.min(1, Math.max(0, pointer.x / bounds.width))
       pointer.ny = Math.min(1, Math.max(0, pointer.y / bounds.height))
 
-      if (hudValue) hudValue.textContent = `${Math.round(event.clientX)}.${Math.round(event.clientY)}`
       if (reticle) {
         reticle.style.opacity = '1'
         reticle.style.transform = `translate3d(${event.clientX - bounds.left}px, ${event.clientY - bounds.top}px, 0)`
