@@ -5,8 +5,10 @@ import resumeUrl from '../Docs/References/MyResume-1.pdf'
 import portraitUrl from './assets/portrait-pixel.png'
 import { Header } from './components/Header.jsx'
 import { InteractivePixelField } from './components/InteractivePixelField.jsx'
+
 import { VariableName } from './components/VariableName.jsx'
 import { ProjectCard } from './components/ProjectCard.jsx'
+import { ExperienceCard } from './components/ExperienceCard.jsx'
 import { SectionHeading } from './components/SectionHeading.jsx'
 import { certifications, experience, links, projects, skills } from './data/portfolio.js'
 
@@ -140,19 +142,7 @@ function App() {
 
           <div className="timeline">
             {experience.map((item, index) => (
-              <article className="timeline-item reveal" key={`${item.organization}-${item.role}`}>
-                <div className="timeline-item__number">0{index + 1}</div>
-                <div className="timeline-item__period">{item.period}</div>
-                <div className="timeline-item__main">
-                  <p>{item.organization}</p>
-                  <h3>{item.role}</h3>
-                  <p className="timeline-item__summary">{item.summary}</p>
-                  <ul className="tag-list">
-                    {item.stack.map((technology) => <li key={technology}>{technology}</li>)}
-                  </ul>
-                </div>
-                <div className="timeline-item__location">{item.location}</div>
-              </article>
+              <ExperienceCard item={item} index={index} key={`${item.organization}-${item.role}`} />
             ))}
           </div>
         </section>
@@ -183,7 +173,7 @@ function App() {
         </section>
 
         <section className="section about" id="about" aria-labelledby="about-title">
-          <SectionHeading number="04" eyebrow="Context & curiosity" title="Beyond the code" />
+          <SectionHeading number="04" eyebrow="Context & curiosity" title="ABOUT ME" />
 
           <div className="about-grid">
             <div className="about-statement reveal">
@@ -194,23 +184,42 @@ function App() {
               </p>
             </div>
 
-            <article className="about-card reveal">
-              <span>EDU / 01</span>
-              <div>
-                <p>2024 — Present</p>
-                <h3>B.Tech · Computer Science & Engineering</h3>
-                <p>Karunya Institute of Technology and Sciences · Coimbatore</p>
-              </div>
-            </article>
-
-            <article className="about-card reveal">
-              <span>LEAD / 02</span>
-              <div>
-                <p>Current</p>
-                <h3>Career Guidance Club President</h3>
-                <p>Building opportunities for students through workshops, events, and shared direction.</p>
-              </div>
-            </article>
+            <div className="about-education-layout">
+              <figure className="about-photo reveal">
+                <img className="about-event-photo" src="/images/CGC-mc.PNG" alt="Praneet hosting an event at Karunya University" width="280" height="210" loading="lazy" />
+              </figure>
+            <div className="education-trail reveal">
+              <p className="kicker">Where I’ve studied</p>
+              <ol className="education-timeline" aria-label="Education timeline">
+                <li>
+                  <span className="education-timeline__date">2009 — 2017</span>
+                  <div><h3>Bishop Cotton Boys’ School</h3><p>Bangalore, India</p></div>
+                </li>
+                <li>
+                  <span className="education-timeline__date">2017 — 2021</span>
+                  <div><h3>St. Paul’s School</h3><p>Darjeeling, India</p></div>
+                </li>
+                <li>
+                  <span className="education-timeline__date">2021 — 2023</span>
+                  <div><h3>Bishop Cotton Boys’ School</h3><p>Bangalore, India</p></div>
+                </li>
+                <li className="education-timeline__current">
+                  <span className="education-timeline__date">2024 — Present</span>
+                  <div>
+                    <h3>Karunya Institute of Technology and Sciences</h3>
+                    <p>B.Tech · Computer Science & Engineering · Coimbatore</p>
+                    <div className="education-timeline__leadership">
+                      <div>
+                        <span>Along the way</span>
+                        <h4>President · Career Guidance Club</h4>
+                        <p>Creating opportunities through career events and study abroad workshops.</p>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              </ol>
+            </div>
+            </div>
 
             <div className="interests reveal">
               <div className="interests__orbit" aria-hidden="true"><span>+</span></div>

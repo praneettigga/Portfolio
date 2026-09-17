@@ -10,7 +10,7 @@ The portfolio is a static, single-page React application built with Vite. It has
 - `src/data/portfolio.js` is the source of truth for navigation, experience, projects, skills, certifications, and contact links.
 - `src/components/` contains reusable interface pieces such as the navigation, section heading, ASCII artwork, and project cards.
 - `src/styles/` contains the visual tokens, responsive layout, and animation states.
-- `Docs/References/` stores the source portrait and downloadable resume.
+- `public/images/` stores website images, including the source portrait; `Docs/References/` stores the downloadable resume.
 
 ## Data Flow
 
@@ -22,4 +22,4 @@ GSAP and ScrollTrigger manage scroll reveals, section progress, pinned accents, 
 
 ## Assets and Hosting
 
-Vite fingerprints imported assets during production builds. The source portrait and PDF remain local to the repository. A transparent, web-optimized dither portrait in `src/assets/` is used by the hero, and Vite emits only consumed assets into the final `dist/` output. The generated site can be hosted by any static provider.
+Vite fingerprints imported assets during production builds. The original portrait is stored in `public/images/`, while the hero uses the transparent, web-optimized dither portrait in `src/assets/portrait-pixel.png` with an animated pixel overlay. The PDF remains local to the repository. The generated site can be hosted by any static provider.

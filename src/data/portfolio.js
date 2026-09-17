@@ -11,6 +11,11 @@ export const experience = [
     period: 'JUN 2026',
     role: 'Software Development Intern',
     organization: 'Bharat Electronics Limited',
+    logo: '/images/BEL-logo.png',
+    details: [
+      'Worked with the Software SBU on a real-world LAN-based messaging application.',
+      'Developed Spring Boot APIs and connected React and Electron interfaces to backend services for messaging over a local area network.',
+    ],
     location: 'Bangalore, India',
     summary:
       'Contributed to a LAN-based messaging application, developing Spring Boot APIs and integrating React and Electron interfaces with backend services.',
@@ -20,6 +25,12 @@ export const experience = [
     period: 'SEP 2026 — NOW',
     role: 'President, Career Guidance Club',
     organization: 'CIRA · Karunya University',
+    logo: '/images/CGC-logo.jpeg',
+    logoAlt: 'Career Guidance Club logo',
+    details: [
+      'Conducted workshops on study abroad opportunities, helping students explore international education options and plan their next steps.',
+      'Coordinated career-focused events with students, faculty, and external speakers, and served as MC for an event.',
+    ],
     location: 'Coimbatore, India',
     summary:
       'Plan and coordinate workshops, competitions, guest sessions, and career-focused events with students, faculty, and external speakers.',
@@ -29,6 +40,11 @@ export const experience = [
     period: 'SEP 2025 — APR 2026',
     role: 'Web Developer',
     organization: 'KHacks · Karunya Innovation & Design Studio',
+    logo: '/images/KIDS-logo.png',
+    details: [
+      'Worked on multiple AI projects at Karunya Innovation & Design Studio.',
+      'Contributed development and frontend work to the official KIDS website, used by over 6,000 people, including responsive interfaces and website features.',
+    ],
     location: 'Coimbatore, India',
     summary:
       'Built responsive frontend and backend features for the official KIDS website and developed independent full-stack applications.',

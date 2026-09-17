@@ -16,8 +16,7 @@ export function Header() {
   return (
     <header className="site-header">
       <a className="wordmark" href="#top" aria-label="Praneet Tigga, back to top">
-        <span className="wordmark-mark">PN</span>
-        <span className="wordmark-dot">TIGGA. PORTFOLIO/2026</span>
+        <span className="wordmark-dot">PORTFOLIO/2026</span>
       </a>
 
       <button
