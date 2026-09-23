@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { Fragment, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import resumeUrl from '../Docs/References/MyResume-1.pdf'
@@ -131,33 +131,65 @@ function App() {
       })
 
       const elements = gsap.utils.toArray('.reveal')
-      const targetsFor = (element) => element.matches('.section-heading')
-        ? [...element.children]
-        : [element]
+      const compact = window.matchMedia('(max-width: 620px)').matches
+      const distance = compact ? 16 : 30
+      const profiles = new Map(elements.map((element) => {
+        const words = [...element.querySelectorAll('.heading-word')]
+        if (words.length) {
+          return [element, [
+            { targets: [...element.querySelectorAll('.section-heading__meta')], from: { y: 12, opacity: 0 }, at: 0 },
+            { targets: words, from: { yPercent: 110, opacity: 0 }, at: 0.1, stagger: 0.065, duration: 1.05 },
+          ]]
+        }
+        if (element.matches('.project-card')) {
+          return [element, [
+            { targets: [element], from: { y: distance, opacity: 0 }, at: 0 },
+            { targets: [...element.querySelector('.project-card__body').children], from: { y: distance / 2, opacity: 0 }, at: 0.12, stagger: 0.065 },
+            { targets: [element.querySelector('.ascii-panel')], from: { y: distance, opacity: 0 }, at: 0.2, duration: 1.1 },
+          ]]
+        }
+        if (element.matches('.about-photo')) {
+          return [element, [
+            { targets: [element], from: { clipPath: 'inset(0 0 100% 0)', opacity: 0 }, at: 0, duration: 1.1 },
+            { targets: [...element.querySelectorAll('img')], from: { scale: 1.06 }, at: 0, duration: 1.3 },
+          ]]
+        }
+        return [element, [{ targets: [element], from: { y: distance, opacity: 0 }, at: 0 }]]
+      }))
+      const targetsFor = (element) => profiles.get(element).flatMap(({ targets }) => targets)
 
       elements.forEach((element) => {
-        gsap.set(targetsFor(element), { y: 24, opacity: 0 })
+        profiles.get(element).forEach(({ targets, from }) => {
+          if (targets.length) gsap.set(targets, from)
+        })
+        // CSS hover easing must not trail every frame of a GSAP entrance.
+        const hoverTargets = element.querySelectorAll('.ascii-panel, .about-event-photo')
+        if (hoverTargets.length) gsap.set(hoverTargets, { transitionProperty: 'none' })
       })
+
+      const reveal = (element, delay = 0) => {
+        const timeline = gsap.timeline({ delay, defaults: { ease: 'power3.out', overwrite: 'auto' } })
+        profiles.get(element).forEach(({ targets, from, at, stagger = 0, duration = 0.9 }) => {
+          if (!targets.length) return
+          const to = Object.fromEntries(Object.keys(from).map((key) => [key,
+            key === 'opacity' || key === 'scale' ? 1 : key === 'clipPath' ? 'inset(0 0 0% 0)' : 0,
+          ]))
+          timeline.to(targets, {
+            ...to, duration, stagger, clearProps: 'transform,opacity,clipPath,transitionProperty',
+          }, at)
+        })
+      }
 
       // Live intersection geometry stays accurate while role details change height.
       // Observe the stable heading wrapper so its metadata leads the title slightly.
       const observer = new window.IntersectionObserver((entries) => {
         context.add(() => {
           entries.filter((entry) => entry.isIntersecting).forEach(({ target }, index) => {
-            gsap.to(targetsFor(target), {
-              y: 0,
-              opacity: 1,
-              duration: 0.7,
-              delay: Math.min(index * 0.055, 0.165),
-              stagger: 0.07,
-              ease: 'power3.out',
-              overwrite: true,
-              clearProps: 'transform,opacity',
-            })
+            reveal(target, Math.min(index * 0.075, 0.225))
             observer.unobserve(target)
           })
         })
-      }, { rootMargin: '0px 0px -5% 0px', threshold: 0 })
+      }, { rootMargin: '0px 0px -4% 0px', threshold: 0 })
       elements.forEach((element) => observer.observe(element))
 
       const revealFocused = (event) => {
@@ -165,9 +197,9 @@ function App() {
         if (!element) return
         observer.unobserve(element)
         context.add(() => {
-          gsap.to(targetsFor(element), {
-            y: 0, opacity: 1, duration: 0, overwrite: true, clearProps: 'transform,opacity',
-          })
+          const targets = targetsFor(element)
+          gsap.killTweensOf(targets)
+          gsap.set(targets, { clearProps: 'transform,opacity,clipPath,transitionProperty' })
         })
       }
       const page = pageRef.current
@@ -341,7 +373,16 @@ function App() {
           </div>
           <div className="contact__main">
             <p className="kicker reveal">Have a system worth building?</p>
-            <h2 id="contact-title" className="reveal">Let&apos;s make it <em>work.</em></h2>
+            <h2 id="contact-title" className="reveal" aria-label="Let's make it work.">
+              {['Let’s', 'make', 'it'].map((word) => (
+                <Fragment key={word}>
+                  <span className="heading-word-mask" aria-hidden="true">
+                    <span className="heading-word">{word}</span>
+                  </span>{' '}
+                </Fragment>
+              ))}
+              <em className="heading-word-mask" aria-hidden="true"><span className="heading-word">work.</span></em>
+            </h2>
             <a className="contact__email reveal" href={links.email}>
               praneetnischal@karunya.edu.in <span aria-hidden="true">↗</span>
             </a>

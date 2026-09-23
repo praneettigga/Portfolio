@@ -406,6 +406,20 @@ button:focus-visible {
   text-transform: uppercase;
 }
 
+.heading-word-mask {
+  display: inline-block;
+  overflow: clip;
+  vertical-align: top;
+  padding-block: 0.14em;
+  margin-block: -0.14em;
+  padding-inline: 0.06em;
+  margin-inline: -0.06em;
+}
+
+.heading-word {
+  display: inline-block;
+}
+
 .timeline {
   border-top: 1px solid var(--line-strong);
 }
@@ -613,7 +627,7 @@ button:focus-visible {
 
 .project-list {
   display: grid;
-  gap: 1rem;
+  gap: clamp(1.5rem, 3vw, 3rem);
 }
 
 .project-card {
@@ -1021,8 +1035,8 @@ button:focus-visible {
 }
 
 .contact {
-  margin-top: clamp(3rem, 6vw, 6rem);
-  padding: 1rem var(--gutter) 1rem;
+  margin-top: clamp(4.5rem, 8vw, 8rem);
+  padding: clamp(1.5rem, 3vw, 3rem) var(--gutter) 1rem;
   color: var(--bg);
   background: var(--ink);
 }
@@ -1039,7 +1053,7 @@ button:focus-visible {
 }
 
 .contact__main {
-  padding-block: clamp(2rem, 4vw, 3.5rem) 1.5rem;
+  padding-block: clamp(3rem, 6vw, 6rem) clamp(2rem, 4vw, 4rem);
 }
 
 .contact__main .kicker {
@@ -1073,7 +1087,7 @@ button:focus-visible {
 }
 
 .contact__email span {
-  transition: transform 200ms ease;
+  transition: transform 450ms var(--ease-out);
 }
 
 .contact__email:hover span {
