@@ -29,6 +29,61 @@ function App() {
   const heroRef = useRef(null)
   const [hasPassedLanding, setHasPassedLanding] = useState(false)
 
+  useLayoutEffect(() => {
+    const motion = gsap.matchMedia()
+
+    motion.add('(prefers-reduced-motion: no-preference)', () => {
+      const page = pageRef.current
+      const root = document.documentElement
+      let frame = 0
+      let disposed = false
+      page.classList.add('page--contact-transition')
+
+      const fade = gsap.fromTo(root, { '--page-background': '#090909' }, {
+        '--page-background': '#efeee9',
+        ease: 'none',
+        onUpdate() {
+          // Switch polarity before white text loses contrast on the gray backdrop.
+          page.dataset.contactTone = this.progress() < 0.473 ? 'dark' : 'light'
+        },
+        scrollTrigger: {
+          trigger: page.querySelector('#contact'),
+          start: 'clamp(top 95%)',
+          end: 'clamp(top 35%)',
+          scrub: 0.5,
+          invalidateOnRefresh: true,
+        },
+      })
+
+      const refresh = () => {
+        frame = 0
+        if (disposed) return
+        ScrollTrigger.refresh()
+        // Restored scroll positions and hash navigation must start at their actual theme.
+        fade.progress(fade.scrollTrigger.progress)
+      }
+      const scheduleRefresh = () => {
+        if (!frame && !disposed) frame = window.requestAnimationFrame(refresh)
+      }
+      const resize = new window.ResizeObserver(scheduleRefresh)
+      resize.observe(page)
+      window.addEventListener('pageshow', scheduleRefresh)
+      document.fonts.ready.then(scheduleRefresh)
+      refresh()
+
+      return () => {
+        disposed = true
+        window.cancelAnimationFrame(frame)
+        resize.disconnect()
+        window.removeEventListener('pageshow', scheduleRefresh)
+        page.classList.remove('page--contact-transition')
+        delete page.dataset.contactTone
+      }
+    }, pageRef)
+
+    return () => motion.revert()
+  }, [])
+
   useEffect(() => {
     const updateTopButton = () => {
       setHasPassedLanding(heroRef.current?.getBoundingClientRect().bottom <= 0)

@@ -34,7 +34,7 @@
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 5rem;
-  background: var(--bg);
+  background: var(--page-background, var(--bg));
 }
 
 body {
@@ -43,7 +43,7 @@ body {
   overflow-x: hidden;
   background:
     linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
-    var(--bg);
+    var(--page-background, var(--bg));
   background-size: 100% 5rem;
   color: var(--ink);
 }
@@ -1124,6 +1124,50 @@ button:focus-visible {
 .contact footer {
   margin-top: 1.5rem;
   border-bottom: 0;
+}
+
+/* One shared canvas removes the hard edge where the final sections meet. */
+.page--contact-transition {
+  --closing-ink: #fff;
+  --closing-hover: rgba(255, 255, 255, 0.06);
+}
+
+.page--contact-transition[data-contact-tone='light'] {
+  --closing-ink: #000;
+  --closing-hover: rgba(0, 0, 0, 0.06);
+}
+
+.page--contact-transition :is(.certifications, .contact) {
+  --ink: var(--closing-ink);
+  --muted: var(--closing-ink);
+  --line: color-mix(in srgb, var(--closing-ink) 25%, transparent);
+  --line-strong: color-mix(in srgb, var(--closing-ink) 55%, transparent);
+  color: var(--closing-ink);
+}
+
+.page--contact-transition .contact {
+  background: transparent;
+}
+
+.page--contact-transition .certification-row:hover {
+  background: var(--closing-hover);
+}
+
+.page--contact-transition :is(.contact__meta, .contact footer, .contact__links, .contact__links a) {
+  border-color: var(--line);
+}
+
+.page--contact-transition .contact__email {
+  border-color: currentColor;
+}
+
+.page--contact-transition .contact__links .contact__download {
+  color: var(--closing-ink);
+}
+
+.page--contact-transition .contact__links a:is(:hover, :focus-visible) {
+  color: var(--page-background, var(--bg));
+  background: var(--closing-ink);
 }
 
 .back-to-top {
