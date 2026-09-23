@@ -19,6 +19,7 @@
   --mono: "IBM Plex Mono", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
   --gutter: clamp(1rem, 3vw, 3.5rem);
   --section-space: clamp(7rem, 14vw, 13rem);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   color: var(--ink);
   background: var(--bg);
   font-family: var(--sans);
@@ -104,6 +105,7 @@ button:focus-visible {
   height: 2px;
   background: var(--ink);
   transform: scaleX(0);
+  transform-origin: left center;
 }
 
 .page,
@@ -515,7 +517,7 @@ button:focus-visible {
   border-color: var(--accent);
 }
 
-.timeline-item.is-expanded .timeline-item__number { color: var(--ink); transform: translateX(5px); }
+.timeline-item.is-expanded .timeline-item__number { color: var(--bg); transform: translateX(3px); }
 
 .timeline-item__heading {
   display: flex;
@@ -524,7 +526,7 @@ button:focus-visible {
   transition: transform 550ms cubic-bezier(.16, 1, .3, 1);
 }
 
-.timeline-item.is-expanded .timeline-item__heading { transform: translateX(6px); }
+.timeline-item.is-expanded .timeline-item__heading { transform: translateX(3px); }
 .timeline-item__heading h3 { min-width: 0; }
 
 .timeline-item__logo {
@@ -572,7 +574,7 @@ button:focus-visible {
   display: grid;
   grid-template-rows: 0fr;
   opacity: 0;
-  transition: grid-template-rows 550ms cubic-bezier(.16, 1, .3, 1), opacity 350ms ease;
+  transition: grid-template-rows 380ms var(--ease-out), opacity 240ms ease;
 }
 .is-expanded .role-details__panel { grid-template-rows: 1fr; opacity: 1; }
 .role-details__clip { min-height: 0; overflow: hidden; }
@@ -581,7 +583,11 @@ button:focus-visible {
   padding: 1rem 0 0;
   color: #b3b2ac;
   line-height: 1.65;
+  transform: translateY(6px);
+  transition: transform 380ms var(--ease-out);
 }
+
+.is-expanded .role-details__content { transform: translateY(0); }
 
 .role-details__eyebrow { color: var(--ink); font: 600 0.65rem/1.5 var(--mono); text-transform: uppercase; }
 .role-details figure { max-width: 22rem; margin: 1.25rem 0 0; }
@@ -727,7 +733,7 @@ button:focus-visible {
 }
 
 .project-card:hover .ascii-panel {
-  transform: rotate(-2deg) scale(1.02);
+  transform: translateY(-3px) scale(1.01);
 }
 
 .ascii-panel__top {
@@ -977,12 +983,21 @@ button:focus-visible {
   gap: 1rem;
   min-height: 7rem;
   border-bottom: 1px solid var(--line);
-  transition: padding 250ms ease, background 250ms ease;
+  transition: background 250ms ease;
 }
 
 .certification-row:hover {
-  padding-inline: 1rem;
   background: rgba(255, 255, 255, 0.04);
+}
+
+.certification-row h3,
+.certification-row > span:last-child {
+  transition: transform 300ms var(--ease-out);
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .certification-row:hover h3 { transform: translateX(4px); }
+  .certification-row:hover > span:last-child { transform: rotate(90deg); }
 }
 
 .certification-row > span,
@@ -1535,6 +1550,7 @@ button:focus-visible {
 }
 
 .site-nav a {
+  position: relative;
   gap: 0.28rem;
   color: var(--muted);
   letter-spacing: 0.14em;
@@ -1543,6 +1559,21 @@ button:focus-visible {
 .site-nav a:hover {
   color: var(--accent);
 }
+
+.site-nav a::after {
+  position: absolute;
+  right: 0;
+  bottom: 0.45rem;
+  left: 0;
+  height: 1px;
+  background: currentColor;
+  content: '';
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 280ms var(--ease-out);
+}
+
+.site-nav a:is(:hover, :focus-visible)::after { transform: scaleX(1); }
 
 .site-nav a span {
   color: inherit;

@@ -1,8 +1,8 @@
-import { useId, useLayoutEffect, useState } from 'react'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useId, useRef, useState } from 'react'
 
 export function ExperienceCard({ item, index }) {
   const [expanded, setExpanded] = useState(false)
+  const toggleRef = useRef(null)
   const id = useId()
   const filterId = `${id}-logo`
   const panelId = `${id}-details`
@@ -13,21 +13,13 @@ export function ExperienceCard({ item, index }) {
   ]
   const frame = logoFrames[index]
 
-  useLayoutEffect(() => { ScrollTrigger.refresh() }, [expanded])
-
   return (
     <article className={`timeline-item reveal${expanded ? ' is-expanded' : ''}`}
-      onPointerEnter={(event) => {
-        if (event.pointerType === 'mouse') setExpanded(true)
-      }}
-      onPointerLeave={(event) => {
-        if (event.pointerType === 'mouse' && !event.currentTarget.contains(document.activeElement)) setExpanded(false)
-      }}
-      onBlur={(event) => {
-        if (!event.currentTarget.contains(event.relatedTarget) && !event.currentTarget.matches(':hover')) setExpanded(false)
-      }}
       onKeyDown={(event) => {
-        if (event.key === 'Escape') setExpanded(false)
+        if (event.key === 'Escape' && expanded) {
+          setExpanded(false)
+          toggleRef.current?.focus({ preventScroll: true })
+        }
       }}
     >
       <div className="timeline-item__number">0{index + 1}</div>
@@ -55,20 +47,18 @@ export function ExperienceCard({ item, index }) {
           {item.stack.map((technology) => <li key={technology}>{technology}</li>)}
         </ul>
         <div className="role-details">
-          <button className="role-details__toggle" type="button" aria-expanded={expanded} aria-controls={panelId} onClick={() => setExpanded(!expanded)}>
+          <button ref={toggleRef} className="role-details__toggle" type="button" aria-expanded={expanded} aria-controls={panelId} onClick={() => setExpanded((current) => !current)}>
             <span>{expanded ? 'Close role details' : 'View role details'}</span>
             <span className="role-details__icon" aria-hidden="true">+</span>
           </button>
-          <div id={panelId} className="role-details__panel" inert={!expanded} aria-hidden={!expanded} onTransitionEnd={(event) => {
-            if (event.target === event.currentTarget) ScrollTrigger.refresh()
-          }}>
+          <div id={panelId} className="role-details__panel" inert={!expanded} aria-hidden={!expanded}>
           <div className="role-details__clip">
           <div className="role-details__content">
             <p className="role-details__eyebrow">Inside the role / 0{index + 1}</p>
             {item.details.map((detail) => <p key={detail}>{detail}</p>)}
             {item.image && (
               <figure>
-                <img className="role-details__event-photo" src={item.image} alt={item.imageAlt} loading="lazy" width="2096" height="1170" onLoad={() => ScrollTrigger.refresh()} />
+                <img className="role-details__event-photo" src={item.image} alt={item.imageAlt} loading="lazy" width="2096" height="1170" />
                 <figcaption>On stage / MC at a Karunya University event</figcaption>
               </figure>
             )}

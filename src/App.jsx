@@ -45,27 +45,27 @@ function App() {
   }, [])
 
   useLayoutEffect(() => {
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    if (reduceMotion) return undefined
+    const motion = gsap.matchMedia()
 
-    const context = gsap.context(() => {
+    motion.add('(prefers-reduced-motion: no-preference)', (context) => {
       gsap.from('.hero-reveal', {
-        y: 42,
+        y: 28,
         opacity: 0,
-        duration: 1.05,
-        stagger: 0.08,
+        duration: 0.85,
+        stagger: 0.07,
         ease: 'power3.out',
+        clearProps: 'transform,opacity',
       })
 
       gsap.from('.portrait-wrap', {
         clipPath: 'inset(100% 0 0 0)',
-        duration: 1.4,
+        duration: 1.15,
         ease: 'power4.inOut',
         delay: 0.15,
       })
 
       gsap.to('.portrait', {
-        yPercent: 8,
+        yPercent: 5,
         ease: 'none',
         scrollTrigger: {
           trigger: '.hero',
@@ -75,38 +75,60 @@ function App() {
         },
       })
 
-      gsap.utils.toArray('.reveal').forEach((element) => {
-        gsap.from(element, {
-          y: 56,
-          opacity: 0,
-          duration: 0.9,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: element,
-            start: 'top 86%',
-            once: true,
-          },
-        })
+      const elements = gsap.utils.toArray('.reveal')
+      const targetsFor = (element) => element.matches('.section-heading')
+        ? [...element.children]
+        : [element]
+
+      elements.forEach((element) => {
+        gsap.set(targetsFor(element), { y: 24, opacity: 0 })
       })
 
-      gsap.to('.scroll-progress', {
-        scaleX: 1,
-        transformOrigin: 'left center',
-        ease: 'none',
-        scrollTrigger: {
-          start: 0,
-          end: 'max',
-          scrub: true,
-        },
-      })
+      // Live intersection geometry stays accurate while role details change height.
+      // Observe the stable heading wrapper so its metadata leads the title slightly.
+      const observer = new window.IntersectionObserver((entries) => {
+        context.add(() => {
+          entries.filter((entry) => entry.isIntersecting).forEach(({ target }, index) => {
+            gsap.to(targetsFor(target), {
+              y: 0,
+              opacity: 1,
+              duration: 0.7,
+              delay: Math.min(index * 0.055, 0.165),
+              stagger: 0.07,
+              ease: 'power3.out',
+              overwrite: true,
+              clearProps: 'transform,opacity',
+            })
+            observer.unobserve(target)
+          })
+        })
+      }, { rootMargin: '0px 0px -5% 0px', threshold: 0 })
+      elements.forEach((element) => observer.observe(element))
+
+      const revealFocused = (event) => {
+        const element = event.target.closest('.reveal')
+        if (!element) return
+        observer.unobserve(element)
+        context.add(() => {
+          gsap.to(targetsFor(element), {
+            y: 0, opacity: 1, duration: 0, overwrite: true, clearProps: 'transform,opacity',
+          })
+        })
+      }
+      const page = pageRef.current
+      page.addEventListener('focusin', revealFocused)
+
+      return () => {
+        observer.disconnect()
+        page.removeEventListener('focusin', revealFocused)
+      }
     }, pageRef)
 
-    return () => context.revert()
+    return () => motion.revert()
   }, [])
 
   return (
     <div className="page" ref={pageRef}>
-      <div className="scroll-progress" aria-hidden="true" />
       <Header />
       <PageHud />
 

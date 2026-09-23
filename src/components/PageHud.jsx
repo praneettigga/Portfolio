@@ -11,6 +11,7 @@ const labels = {
 }
 
 export function PageHud() {
+  const progressRef = useRef(null)
   const scrollRef = useRef(null)
   const cursorRef = useRef(null)
   const sectionRef = useRef(null)
@@ -24,6 +25,7 @@ export function PageHud() {
       frame = 0
       const maxScroll = document.documentElement.scrollHeight - window.innerHeight
       const progress = maxScroll > 0 ? Math.min(1, Math.max(0, window.scrollY / maxScroll)) : 0
+      progressRef.current.style.transform = `scaleX(${progress})`
       scrollRef.current.textContent = progress.toFixed(2)
       cursorRef.current.textContent = cursor
       const threshold = (document.querySelector('.site-header')?.getBoundingClientRect().bottom || 0) + 24
@@ -58,12 +60,15 @@ export function PageHud() {
   }, [])
 
   return (
-    <div className="page-hud" aria-hidden="true">
-      <span>SCRL <b ref={scrollRef}>0.00</b></span>
-      <span>CRSR <b ref={cursorRef}>0, 0</b></span>
-      <span ref={sectionRef}>00 — INTRO</span>
-      <span>THEME <b>■ #C3FFFC</b></span>
-      <span>+05:30</span>
-    </div>
+    <>
+      <div ref={progressRef} className="scroll-progress" aria-hidden="true" />
+      <div className="page-hud" aria-hidden="true">
+        <span>SCRL <b ref={scrollRef}>0.00</b></span>
+        <span>CRSR <b ref={cursorRef}>0, 0</b></span>
+        <span ref={sectionRef}>00 — INTRO</span>
+        <span>THEME <b>■ #C3FFFC</b></span>
+        <span>+05:30</span>
+      </div>
+    </>
   )
 }
